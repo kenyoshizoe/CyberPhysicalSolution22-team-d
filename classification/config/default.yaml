@@ -18,7 +18,7 @@ train:
 evaluation:
   directory: "data/val_real2"
   have_qr: true
-  preview: true
+  preview: false
   make_squared:
     method: "CUTOFF"
   equalization:
@@ -36,4 +36,4 @@ evaluation_real1:
 
 evaluation_real2:
   directory: "data/val_real2"
-  have_qr: false
+  have_qr: true
