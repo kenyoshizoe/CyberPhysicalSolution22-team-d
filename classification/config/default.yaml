@@ -1,0 +1,39 @@
+name: "model"
+network: "resnet18"
+evaluation_settings:
+  - evaluation_kaggle
+  - evaluation_real1
+  - evaluation_real2
+
+train:
+  directory: "data/train"
+  preview: false
+  make_squared:
+    method: "CUTOFF"
+  equalization:
+    method: "HSV_HIST"
+    equalize_s: true
+    equalize_v: false
+
+evaluation:
+  directory: "data/val_real2"
+  have_qr: true
+  preview: true
+  make_squared:
+    method: "CUTOFF"
+  equalization:
+    method: "HSV_HIST"
+    equalize_s: true
+    equalize_v: false
+
+evaluation_kaggle:
+  directory: "data/val_kaggle"
+  have_qr: false
+
+evaluation_real1:
+  directory: "data/val_real1"
+  have_qr: true
+
+evaluation_real2:
+  directory: "data/val_real2"
+  have_qr: false
