@@ -84,6 +84,8 @@ if (__name__ == '__main__'):
     base_params['network'] = params['network']
     base_params['name'] = params['name']
 
+    PRINT_RESULT = False
+
     for setting in params['evaluation_settings']:
         eval_params = base_params.copy()
         eval_params.update(params[setting])
