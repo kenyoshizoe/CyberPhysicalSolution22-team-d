@@ -20,8 +20,8 @@ if (__name__ == '__main__'):
     # print(eval_params)
 
     print("--- train ---")
-    trained_model = train(train_params)
+    trained_model = train.train(train_params)
 
     # evaluation
     print("--- evaluation ---")
-    evaluation(trained_model, eval_params)
+    evaluation.evaluation(trained_model, eval_params)
