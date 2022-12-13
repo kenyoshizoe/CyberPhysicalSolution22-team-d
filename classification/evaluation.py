@@ -9,6 +9,7 @@ from img2feat import CNN
 
 import util.preprocessing as pre
 from util.qrcode import detect_roi
+from util.progressbar import print_progress
 
 IMG_SIZE = (224, 224)
 PRINT_RESULT = True
@@ -24,7 +25,7 @@ def evaluation(model,  params):
     result_y = []
 
     files = glob.glob('{}/*'.format(params['directory']))
-    for file in files:
+    for i, file in enumerate(files):
         basename = os.path.basename(file)
         img = cv2.imread(file)
 
@@ -56,14 +57,16 @@ def evaluation(model,  params):
 
         data_num += 1
         if basename.startswith('ant') == (y[0] < 0.5):
-            if PRINT_RESULT:
-                print(basename, ':o:')
+            if params['print_result']:
+                print(basename, 'o')
             correct_num += 1
         else:
-            if PRINT_RESULT:
-                print(basename, ':x:')
+            if params['print_result']:
+                print(basename, 'x')
 
-    print(f'accuracy:{correct_num / data_num * 100} %')
+        if not params['print_result']:
+            print_progress(i + 1, len(files))
+    print(f'\naccuracy:{correct_num / data_num * 100} %')
 
 
 if (__name__ == '__main__'):

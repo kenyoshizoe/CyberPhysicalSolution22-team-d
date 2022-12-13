@@ -16,6 +16,7 @@ from sklearn.svm import SVC, LinearSVC
 
 from util.qrcode import detect_roi
 import util.preprocessing as pre
+from util.progressbar import print_progress
 
 IMG_SIZE = (224, 224)
 
@@ -48,7 +49,7 @@ def train(params):
     Y = None
 
     files = glob.glob('{}/*'.format(params['directory']))
-    for file in files:
+    for i, file in enumerate(files):
         # 画像 / ラベル読み込み
         basename = os.path.basename(file)
         img = cv2.imread(file)
@@ -69,8 +70,9 @@ def train(params):
         y = np.ones((nb_f,), dtype=np.int) * y
         X = f if (X is None) else np.concatenate((X, f), axis=0)
         Y = y if (Y is None) else np.concatenate((Y, y), axis=0)
-
-        print(basename)
+        # 進捗状況の表示
+        print_progress(i + 1, len(files))
+    print("\n")
 
     # 学習
     model = train_model(X, Y)
