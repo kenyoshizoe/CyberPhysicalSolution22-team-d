@@ -9,5 +9,5 @@ def print_progress(progress, goal):
     percent = '{:.2%}'.format(rate)
 
     message = (" " if progress == goal else "*") + " [" + '█' * int(rate * LENGTH) + ' ' * \
-        int((1-rate) * LENGTH) + "]" + f" {progress}/{goal} {percent} "
+        int(LENGTH - rate * LENGTH) + "]" + f" {progress}/{goal} {percent} "
     print("\r" + message, end="")
