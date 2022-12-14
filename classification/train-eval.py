@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+#! /usr/bin/env python3
 from train import train
 from evaluation import evaluation
 import yaml
