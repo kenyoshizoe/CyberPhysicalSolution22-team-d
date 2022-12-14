@@ -46,7 +46,9 @@ def evaluation(model,  params):
             continue
 
         img = pre.equalization(img, params['equalization'])
-        img = pre.make_squared(img, params['make_squared'])
+
+        if not params['have_qr']:
+            img = pre.make_squared(img, params['make_squared'])
 
         if params['preview']:
             cv2.imshow('evaluated iage', img)
