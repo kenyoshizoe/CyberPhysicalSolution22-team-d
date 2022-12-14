@@ -1,6 +1,6 @@
 #! /usr/bin/python3
-import train
-import evaluation
+from train import train
+from evaluation import evaluation
 import yaml
 
 if (__name__ == '__main__'):
@@ -9,19 +9,24 @@ if (__name__ == '__main__'):
     with open('config/default.yaml') as f:
         params = yaml.safe_load(f)
 
-    # extract params
-    train_params = params['train']
-    eval_params = params['evaluation']
-    for p in [train_params, eval_params]:
-        p['network'] = params['network']
-        p['name'] = params['name']
-
-    # print(train_params)
-    # print(eval_params)
-
     print("--- train ---")
-    trained_model = train.train(train_params)
+    train_params = params['train']
+    train_params['network'] = params['network']
+    train_params['name'] = params['name']
+
+    trained_model = train(train_params)
 
     # evaluation
     print("--- evaluation ---")
-    evaluation.evaluation(trained_model, eval_params)
+    base_params = params['evaluation']
+    base_params['network'] = params['network']
+    base_params['name'] = params['name']
+
+    PRINT_RESULT = False
+
+    for setting in params['evaluation_settings']:
+        eval_params = base_params.copy()
+        eval_params.update(params[setting])
+        # evaluation
+        print("--- evaluation {} ---".format(setting))
+        evaluation(trained_model, eval_params)
