@@ -1,5 +1,5 @@
 name: "model"
-network: "resnet18"
+network: "densenet201"
 evaluation_settings:
   - evaluation_kaggle
   - evaluation_real1
@@ -17,6 +17,7 @@ train:
 
 evaluation:
   directory: "data/val_real2"
+  print_result: false
   have_qr: true
   preview: false
   make_squared:
