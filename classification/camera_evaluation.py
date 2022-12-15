@@ -38,16 +38,6 @@ if (__name__ == '__main__'):
         print('camera couldnt open')
         exit()
 
-    param = {
-        'print_result': True,
-        'have_qr': False,
-        'preview': False,
-        'equalization': {
-            'eqalize_s': True,
-            'eqalize_v': False
-        }
-    }
-
     while True:
         # capture
         ret, frame = cap.read()
@@ -56,7 +46,7 @@ if (__name__ == '__main__'):
 
         (code, rect), (roi, roi_rect) = detect_roi(frame)
         if roi is not None:
-            y = evaluation(model, net, frame, code, param)
+            y = evaluation(model, net, frame, code, eval_params)
             if y is None:
                 continue
 
