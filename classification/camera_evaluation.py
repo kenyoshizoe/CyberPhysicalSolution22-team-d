@@ -11,64 +11,7 @@ from img2feat import CNN
 import util.preprocessing as pre
 from util.qrcode import detect_roi
 from util.progressbar import print_progress
-
-IMG_SIZE = (224, 224)
-PRINT_RESULT = True
-
-
-def evaluation(model,  params):
-    net = CNN(params['network'], img_size=IMG_SIZE)
-
-    data_num = 0
-    correct_num = 0
-
-    code_y = []
-    result_y = []
-
-    files = glob.glob('{}/*'.format(params['directory']))
-    for i, file in enumerate(files):
-        basename = os.path.basename(file)
-        img = cv2.imread(file)
-
-        if img is None:
-            continue
-
-        label = None
-
-        if params['have_qr']:
-            (code, rect), (img, roi_rect) = detect_roi(img)
-            label = pre.code2label
-            if img is None:
-                continue
-        else:
-            label = pre.code2label(basename)
-
-        if img is None or label is None:
-            continue
-
-        img = pre.equalization(img, params['equalization'])
-        img = pre.make_squared(img, params['make_squared'])
-
-        if params['preview']:
-            cv2.imshow('evaluated iage', img)
-            cv2.waitKey(10)
-
-        x = net([img])
-        y = model.predict(x)
-
-        data_num += 1
-        if basename.startswith('ant') == (y[0] < 0.5):
-            if params['print_result']:
-                print(basename, 'o')
-            correct_num += 1
-        else:
-            if params['print_result']:
-                print(basename, 'x')
-
-        if not params['print_result']:
-            print_progress(i + 1, len(files))
-    print(f'\naccuracy:{correct_num / data_num * 100} %')
-
+from evaluation import evaluation
 
 if (__name__ == '__main__'):
     # load params
@@ -95,6 +38,16 @@ if (__name__ == '__main__'):
         print('camera couldnt open')
         exit()
 
+    param = {
+        'print_result': True,
+        'have_qr': False,
+        'preview': False,
+        'equalization': {
+            'eqalize_s': True,
+            'eqalize_v': False
+        }
+    }
+
     while True:
         # capture
         ret, frame = cap.read()
@@ -103,10 +56,9 @@ if (__name__ == '__main__'):
 
         (code, rect), (roi, roi_rect) = detect_roi(frame)
         if roi is not None:
-            roi = pre.equalization(frame, eval_params['equalization'])
-
-            x = net([roi])
-            y = model.predict(x)
+            y = evaluation(model, net, frame, code, param)
+            if y is None:
+                continue
 
             # visualization
             color = (255, 255, 255)

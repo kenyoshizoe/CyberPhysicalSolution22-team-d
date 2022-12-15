@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 from train import train
-from evaluation import evaluation
+from evaluation import evaluation_from_param
 import yaml
 
 if (__name__ == '__main__'):
@@ -29,4 +29,4 @@ if (__name__ == '__main__'):
         eval_params.update(params[setting])
         # evaluation
         print("--- evaluation {} ---".format(setting))
-        evaluation(trained_model, eval_params)
+        evaluation_from_param(trained_model, eval_params)

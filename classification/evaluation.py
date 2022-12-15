@@ -15,7 +15,7 @@ IMG_SIZE = (224, 224)
 PRINT_RESULT = True
 
 
-def evaluation(model,  params):
+def evaluation_from_param(model,  params):
     net = CNN(params['network'], img_size=IMG_SIZE)
 
     data_num = 0
@@ -29,46 +29,50 @@ def evaluation(model,  params):
         basename = os.path.basename(file)
         img = cv2.imread(file)
 
-        if img is None:
+        y = evaluation(model, net, img, basename, params)
+        if y is None:
             continue
-
-        label = None
-
-        if params['have_qr']:
-            (code, rect), (img, roi_rect) = detect_roi(img)
-            label = pre.code2label
-            if img is None:
-                continue
-        else:
-            label = pre.code2label(basename)
-
-        if img is None or label is None:
-            continue
-
-        img = pre.equalization(img, params['equalization'])
-
-        if not params['have_qr']:
-            img = pre.make_squared(img, params['make_squared'])
-
-        if params['preview']:
-            cv2.imshow('evaluated iage', img)
-            cv2.waitKey(10)
-
-        x = net([img])
-        y = model.predict(x)
 
         data_num += 1
         if basename.startswith('ant') == (y[0] < 0.5):
             if params['print_result']:
-                print(basename, 'o')
+                print('⭕', basename)
             correct_num += 1
         else:
             if params['print_result']:
-                print(basename, 'x')
+                print('❌', basename)
 
         if not params['print_result']:
             print_progress(i + 1, len(files))
     print(f'\naccuracy:{correct_num / data_num * 100} %')
+
+def evaluation(model, net, img, code, params):
+    label = None
+    if params['have_qr']:
+        (code, rect), (img, roi_rect) = detect_roi(img)
+        if code is None or img is None:
+            return None
+        label = pre.code2label(code)
+    else:
+        label = pre.code2label(code)
+
+    if img is None:
+        return None
+
+    # 前処理
+    img = pre.equalization(img, params['equalization'])
+    if not params['have_qr']:
+        img = pre.make_squared(img, params['make_squared'])
+
+    # プレビュー
+    if params['preview']:
+        cv2.imshow('evaluated iage', img)
+        cv2.waitKey(10)
+
+    x = net([img])
+    y = model.predict(x)
+
+    return y
 
 
 if (__name__ == '__main__'):
@@ -96,4 +100,4 @@ if (__name__ == '__main__'):
         eval_params.update(params[setting])
         # evaluation
         print("--- evaluation {} ---".format(setting))
-        evaluation(model, eval_params)
+        evaluation_from_param(model, eval_params)
