@@ -3,9 +3,15 @@
 2022年度サイバーフィジカルソリューション 協議会C チームDのリポジトリです。
 
 ## Setup
-venvを用いた仮想環境で依存ライブラリをインストールするスクリプトを用意しています。
+venvを用いた仮想環境で依存ライブラリをインストールするには
 ```bash
-./setup.bash
+sudo apt update && sudo apt upgrade
+sudo apt install -y python3-venv zbar-tools
+
+python3 -m venv env
+source env/bin/activate
+
+pip3 install -r requirements.txt
 ```
 仮想環境に入る際は
 ```bash
