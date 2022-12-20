@@ -1,5 +1,16 @@
 name: "model"
-network: "densenet201"
+# network: "alexnet"     # 84/58/45
+# network: "vgg11"       # 92/61/45
+# network: "vgg16"       # 90/58/55
+# network: "resnet18"    # 91/70/95
+# network: "resnet34"    # 92/85/80
+# network: "resnet101"   # 96/82/80
+# network: "densenet121" # 92/76/100
+# network: "densenet161" # 92/70/85
+# network: "densenet169" # 96/91/90
+network: "densenet201"   # 94/94/95
+# network: "googlenet"   # 90/73/55
+# network: "mobilenet"   # 94/73/60
 evaluation_settings:
   - evaluation_kaggle
   - evaluation_real1
@@ -17,7 +28,7 @@ train:
 
 evaluation:
   directory: "data/val_real2"
-  print_result: false
+  print_result: true
   have_qr: true
   preview: false
   make_squared:
