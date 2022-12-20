@@ -16,6 +16,9 @@ evaluation_settings:
   - evaluation_real1
   - evaluation_real2
 
+server:
+  preview: True
+
 train:
   directory: "data/train"
   preview: false
