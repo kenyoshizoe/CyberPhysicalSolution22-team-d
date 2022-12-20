@@ -50,7 +50,7 @@ def main():
 
     # steup network
     classifier = Classifier(params)
-    server_start(5555, classifier, verbose=False, imfile='server.jpg',
+    server_start(params['server']['port'], classifier, verbose=False, imfile='server.jpg',
                  imshow=params['server']['preview'], vs_str=['ant', 'bee'], zmq_mode=3)
 
 

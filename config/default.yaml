@@ -18,6 +18,12 @@ evaluation_settings:
 
 server:
   preview: True
+  port: 5555
+client:
+  host: "192.168.0.101"
+  port: 5555
+  device: 0
+  timeout: 10000
 
 train:
   directory: "data/train"
