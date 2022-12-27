@@ -125,6 +125,7 @@ def main():
             if (wr is not None):
                 if (time.time() - pre_eval_time > 1):
                     wr.led.off()
+            driver.update()
 
     except KeyboardInterrupt as e:
         print('done.')
