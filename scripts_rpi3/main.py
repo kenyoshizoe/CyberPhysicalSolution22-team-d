@@ -9,6 +9,8 @@ import time
 from util.webcam import webcam, img_from_dir
 from util.client import Client
 
+from driver import Driver
+
 try:
     from raspythoncar.wr_lib2wd import WR2WD
 except:
@@ -103,6 +105,7 @@ def main():
         wr.led.off()
     except:
         wr = None
+    driver = Driver(wr)
 
     pre_eval_time = time.time()
     try:
@@ -115,9 +118,9 @@ def main():
                 pre_eval_time = time.time()
 
             if data['pred'] < 0.5:
-                wr.led.blue()
+                driver.ant()
             else:
-                wr.led.red()
+                driver.bee()
 
             if (wr is not None):
                 if (time.time() - pre_eval_time > 1):

@@ -1,0 +1,151 @@
+from enum import Enum, IntEnum
+from raspythoncar.wr_lib2wd import WR2WD
+import time
+
+
+class State(IntEnum):
+    WAIT_FOR_JUDGE = 1
+    CATCHING_ANT = 2
+    CATCHING_BEE = 3
+
+    BEFORE_LINETRACE_WALL = 4
+    BEFORE_LINETRACE_ANT_BEE_LINE = 5
+    ANT_BEE_LINE_TO_CENTER_LINE = 6
+
+    LINETRACE_WALL = 10
+    LINETRACE_CENTER_LINE = 12
+    LINETRACE_ANT_BEE_LINE = 13
+    LINETRACE_STOP_CENTER = 14
+
+
+class Target(Enum):
+    ant = 0
+    bee = 1
+
+
+class Timer:
+    def __init__(self):
+        self.timer = time.time
+
+    def reset(self):
+        self.timer = time.time
+
+    def get_time(self):
+        return time.time - self.timer
+
+
+class Driver:
+    def __init__(self, wr):
+        self.state = State.WAIT_FOR_JUDGE
+        self.wr = wr
+        self.timer = Timer()
+        self.target = Target.ant
+
+    def update(self):
+        if self.state == State.WAIT_FOR_JUDGE:
+            self.wr.stop()
+        elif self.state == State.BEFORE_LINETRACE_WALL:
+            # turn right/left 90
+            if self.target == Target.ant:
+                self.wr.turn_right()
+            else:
+                self.wr.turn_left()
+            self.wr.led.red()
+            time.sleep(0.8)
+
+            # go straight
+            self.wr.mc.front()
+            self.wr.led.green()
+            time.sleep(2.1)
+
+            # turn left/right 90+
+            if self.target == Target.ant:
+                self.wr.turn_left()
+            else:
+                self.wr.turn_right()
+            time.sleep(0.75)
+
+            self.timer.reset()
+            self.state = State.LINETRACE_LEFT_WALL
+
+        elif self.state == State.BEFORE_LINETRACE_ANT_BEE_LINE:
+            # go stragiht by FF
+            self.wr.mc.front()
+            self.wr.led.green()
+            while self.wr.ps.bottom() == True:
+                pass
+            self.wr.led.blue()
+            time.sleep(0.8)
+
+            # turn left/right
+            if self.target == Target.ant:
+                self.wr.mc.turn_left()
+            else:
+                self.wr.mc.turn_right()
+            self.wr.led.green()
+            time.sleep(0.9)
+
+            self.timer.reset()
+            self.state = State.LINETRACE_ANT_BEE_LINE
+
+        elif self.state == State.ANT_BEE_LINE_TO_CENTER_LINE:
+            # go back
+            self.wr.mc.back()
+            time.sleep(0.5)
+            # turn to center line
+            if self.target == Target.ant:
+                self.wr.mc.turn_left
+            else:
+                self.wr.mc.turn_right
+            self.wr.led.magenta()
+            time.sleep(1.1)
+
+            self.timer.reset()
+            self.state = State.LINETRACE_CENTER_LINE
+
+        elif self.state >= State.LINETRACE_RIGHT_WALL:
+            sensor = None
+            if self.state == State.LINETRACE_WALL:
+                if self.target == Target.ant:
+                    def sensor(): return self.ps.left()
+                else:
+                    def sensor(): return not self.ps.right()
+                if self.timer.get_time() > 3.0:
+                    self.timer.reset()
+                    self.state = State.BEFORE_LINETRACE_ANT_BEE_LINE
+
+            elif self.state == State.LINETRACE_ANT_BEE_LINE:
+                def sensor(): return self.ps.bottom()
+                if self.timer.get_time() > 6.0:
+                    self.timer.reset()
+                    self.state = State.ANT_BEE_LINE_TO_CENTER_LINE
+
+            elif self.state == State.LINETRACE_CENTER_LINE:
+                def sensor(): return self.ps.bottom()
+                if self.timer.get_time() > 2.0 and self.wr.ps.right() and self.wr.ps.left():
+                    self.timer.reset()
+                    self.state = State.LINETRACE_STOP_CENTER
+
+            elif self.state == State.LINETRACE_STOP_CENTER:
+                if self.timer.get_time > 2.5:
+                    self.timer.reset()
+                    self.state = State.WAIT_FOR_JUDGE
+
+            if (sensor):
+                self.wr.mc.front_tr()
+                self.wr.led.red()
+            else:
+                self.wr.mc.front_tl()
+                self.wr.led.blue()
+
+    def ant(self):
+        if self.state == State.WAIT_FOR_JUDGE:
+            self.target = Target.ant
+            self.timer.reset()
+            self.state = State.CATCHING_ANT
+
+    def bee(self):
+        if self.state == State.WAIT_FOR_JUDGE:
+            self.target = Target.bee
+            self.timer.reset()
+            self.state = State.CATCHING_BEE
