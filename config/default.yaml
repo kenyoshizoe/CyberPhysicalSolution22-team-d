@@ -38,7 +38,7 @@ train:
 evaluation:
   directory: "data/val_real2"
   print_result: true
-  have_qr: true
+  have_qr: false
   preview: false
   make_squared:
     method: "CUTOFF"

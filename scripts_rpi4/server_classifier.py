@@ -31,14 +31,17 @@ class Classifier:
     def __call__(self, img):
         (code, rect), (roi, roi_rect) = detect_roi(
             img, size_ratio=self.size_ratio, gap_ratio=self.gap_ratio, th_area=self.th_area)
+        res = evaluation(self.model, self.net, roi,
+                         code, self.params['evaluation'])
+        res = None if res is None else int(res[0])
 
         data = {
             'code': code,
             'rect': rect,
             'roi_rect': roi_rect,
-            'pred': evaluation(self.model, self.net, roi, code, self.params['evaluation']),
+            'pred': res,
         }
-
+        print(data)
         return data
 
 

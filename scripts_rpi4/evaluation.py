@@ -47,6 +47,8 @@ def evaluation_from_param(model,  params):
     print(f'\naccuracy:{correct_num / data_num * 100} %')
 
 def evaluation(model, net, img, code, params):
+    if img is None:
+        return
     label = None
     if params['have_qr']:
         (code, rect), (img, roi_rect) = detect_roi(img)
