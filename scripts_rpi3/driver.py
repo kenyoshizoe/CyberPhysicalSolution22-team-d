@@ -106,27 +106,27 @@ class Driver:
             self.timer.reset()
             self.state = State.LINETRACE_CENTER_LINE
 
-        elif self.state >= State.LINETRACE_WALL:
+        else:
             sensor = None
             if self.state == State.LINETRACE_WALL:
                 if self.target == Target.ant:
-                    def sensor(): return self.ps.left()
+                    sensor = lambda : self.ps.left()
                 else:
-                    def sensor(): return not self.ps.right()
+                    sensor = lambda : not self.ps.right()
                 if self.timer.get_time() > 3.0:
                     print("BEFORE_LINETRACE_ANT_BEE_LINE")
                     self.timer.reset()
                     self.state = State.BEFORE_LINETRACE_ANT_BEE_LINE
 
             elif self.state == State.LINETRACE_ANT_BEE_LINE:
-                def sensor(): return self.ps.bottom()
+                sensor = lambda : self.ps.bottom()
                 if self.timer.get_time() > 6.0:
                     print("ANT_BEE_LINE_TO_CENTER_LINE")
                     self.timer.reset()
                     self.state = State.ANT_BEE_LINE_TO_CENTER_LINE
 
             elif self.state == State.LINETRACE_CENTER_LINE:
-                def sensor(): return self.ps.bottom()
+                sensor = lambda : self.ps.bottom()
                 if self.timer.get_time() > 2.0 and self.wr.ps.right() and self.wr.ps.left():
                     print("LINETRACE_STOP_CENTER")
                     self.timer.reset()
