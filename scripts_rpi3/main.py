@@ -88,12 +88,15 @@ def main():
     params = None
     with open('config/default.yaml') as f:
         params = yaml.safe_load(f)
+    print("param loaded")
+
     client_webcam = thread_Client_webcam(
         host=params['client']['host'],
         port=params['client']['port'],
         device=params['client']['device'],
         timeout=params['client']['timeout'],
         zmq_mode=3)
+    print("connected")
 
     try:
         wr = WR2WD()
@@ -106,7 +109,7 @@ def main():
         while (client_webcam.running):
             # evaluation (example)
             img, data = client_webcam.get_img_data()
-            if data == None:
+            if data is None or data['pred'] is None:
                 continue
             else:
                 pre_eval_time = time.time()
