@@ -65,6 +65,7 @@ class Driver:
                 self.wr.mc.turn_right()
             time.sleep(0.75)
 
+            print("LINETRACE_WALL")
             self.timer.reset()
             self.state = State.LINETRACE_WALL
 
@@ -85,6 +86,7 @@ class Driver:
             self.wr.led.green()
             time.sleep(0.9)
 
+            print("LINETRACE_ANT_BEE_LINE")
             self.timer.reset()
             self.state = State.LINETRACE_ANT_BEE_LINE
 
@@ -100,6 +102,7 @@ class Driver:
             self.wr.led.magenta()
             time.sleep(1.1)
 
+            print("LINETRACE_CENTER_LINE")
             self.timer.reset()
             self.state = State.LINETRACE_CENTER_LINE
 
@@ -111,23 +114,27 @@ class Driver:
                 else:
                     def sensor(): return not self.ps.right()
                 if self.timer.get_time() > 3.0:
+                    print("BEFORE_LINETRACE_ANT_BEE_LINE")
                     self.timer.reset()
                     self.state = State.BEFORE_LINETRACE_ANT_BEE_LINE
 
             elif self.state == State.LINETRACE_ANT_BEE_LINE:
                 def sensor(): return self.ps.bottom()
                 if self.timer.get_time() > 6.0:
+                    print("ANT_BEE_LINE_TO_CENTER_LINE")
                     self.timer.reset()
                     self.state = State.ANT_BEE_LINE_TO_CENTER_LINE
 
             elif self.state == State.LINETRACE_CENTER_LINE:
                 def sensor(): return self.ps.bottom()
                 if self.timer.get_time() > 2.0 and self.wr.ps.right() and self.wr.ps.left():
+                    print("LINETRACE_STOP_CENTER")
                     self.timer.reset()
                     self.state = State.LINETRACE_STOP_CENTER
 
             elif self.state == State.LINETRACE_STOP_CENTER:
                 if self.timer.get_time > 2.5:
+                    print("WAIT_FOR_JUDGE")
                     self.timer.reset()
                     self.state = State.WAIT_FOR_JUDGE
 
