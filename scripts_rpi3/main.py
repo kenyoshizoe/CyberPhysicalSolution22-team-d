@@ -50,6 +50,7 @@ def main():
     # main loop
     try:
         while True:
+            driver.update()
             if driver.state == car_control.State.WAIT_FOR_JUDGE:
                 data = client_webcam.classify()
                 if data is None or data['pred'] is None:
@@ -58,7 +59,6 @@ def main():
                     driver.ant()
                 else:
                     driver.bee()
-            driver.update()
     except KeyboardInterrupt as e:
         print('done.')
 
