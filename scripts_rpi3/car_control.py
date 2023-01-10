@@ -132,6 +132,8 @@ class Driver:
                     return
             elif self.state == State.LINETRACE_ANT_BEE_LINE:
                 sensor_val = self.wr.ps.bottom()
+                if  self.target == Target.ant:
+                    sensor_val = not sensor_val
                 if self.timer.get_time() > 4.0:
                     print("ANT_BEE_LINE_TO_CENTER_LINE")
                     self.timer.reset()
