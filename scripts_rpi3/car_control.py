@@ -74,6 +74,12 @@ class Driver:
             self.state = State.LINETRACE_WALL
 
         elif self.state == State.BEFORE_LINETRACE_ANT_BEE_LINE:
+            # turn left / rifht
+            if self.target == Target.ant:
+                self.wr.mc.right()
+            else:
+                self.wr.mc.left()
+            sleep(0.3)
             # go stragiht by FF
             self.wr.mc.front()
             self.wr.led.green()
