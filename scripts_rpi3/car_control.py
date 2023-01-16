@@ -128,8 +128,10 @@ class Driver:
             sensor_val = False
             if self.state == State.LINETRACE_WALL:
                 if self.target == Target.ant:
+                    # linetrace left wall
                     sensor_val = self.wr.ps.left()
                 else:
+                    # linetrace right wall
                     sensor_val = not self.wr.ps.right()
                 if self.timer.get_time() > 3.0:
                     print("BEFORE_LINETRACE_ANT_BEE_LINE")
@@ -137,8 +139,10 @@ class Driver:
                     self.state = State.BEFORE_LINETRACE_ANT_BEE_LINE
                     return
             elif self.state == State.LINETRACE_ANT_BEE_LINE:
+                # ant -> linetrace right side of line
+                # bee -> linetrace left side of line
                 sensor_val = self.wr.ps.bottom()
-                if  self.target == Target.ant:
+                if self.target == Target.ant:
                     sensor_val = not sensor_val
                 if self.timer.get_time() > 4.0:
                     print("ANT_BEE_LINE_TO_CENTER_LINE")
@@ -146,7 +150,11 @@ class Driver:
                     self.state = State.ANT_BEE_LINE_TO_CENTER_LINE
                     return
             elif self.state == State.LINETRACE_CENTER_LINE:
+                # ant -> linetrace left side of line
+                # bee -> linetrace right side of line
                 sensor_val = self.wr.ps.bottom()
+                if self.target == Target.bee:
+                    sensor_val = not sensor_val
                 if self.timer.get_time() > 2.0 and not self.wr.ps.right() and not self.wr.ps.left():
                     print("LINETRACE_STOP_CENTER")
                     self.timer.reset()
