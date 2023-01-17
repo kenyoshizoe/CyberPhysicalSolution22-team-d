@@ -20,7 +20,7 @@ server:
   preview: True
   port: 5555
 client:
-  host: "192.168.0.101"
+  host: "192.168.0.87"
   port: 5555
   device: 0
   timeout: 10000

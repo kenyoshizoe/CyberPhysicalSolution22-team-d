@@ -76,17 +76,17 @@ class Driver:
         elif self.state == State.BEFORE_LINETRACE_ANT_BEE_LINE:
             # turn left / rifht
             if self.target == Target.ant:
-                self.wr.mc.right()
+                self.wr.mc.turn_left()
             else:
-                self.wr.mc.left()
-            sleep(0.3)
+                self.wr.mc.turn_right()
+            time.sleep(0.3)
             # go stragiht by FF
             self.wr.mc.front()
             self.wr.led.green()
             while self.wr.ps.bottom() == True:
                 pass
             self.wr.led.blue()
-            time.sleep(0.8)
+            time.sleep(1.0)
 
             # turn left/right
             if self.target == Target.ant:
@@ -114,7 +114,7 @@ class Driver:
             else:
                 self.wr.mc.turn_right()
             self.wr.led.magenta()
-            time.sleep(1.1)
+            time.sleep(0.9)
             # go straight until center line
             self.wr.mc.front()
             while self.wr.ps.bottom():
